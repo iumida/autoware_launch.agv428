@@ -1,26 +1,34 @@
 <launch>
   <arg name="launch_driver" default="true"/>
+  <arg name="vehicle_id" default="default"/>
 
   <group>
     <push-ros-namespace namespace="imu"/>
 
-    <!-- <group>
-      <push-ros-namespace namespace="tamagawa"/>
-      <node pkg="tamagawa_imu_driver" name="tag_serial_driver" exec="tag_serial_driver" if="$(var launch_driver)">
-        <remap from="imu/data_raw" to="imu_raw"/>
-        <param name="port" value="/dev/imu"/>
-        <param name="imu_frame_id" value="tamagawa/imu_link"/>
-      </node>
-    </group> -->
+    <!-- 啟動 xsens_mti_node，並重新命名 topic 為 imu_raw -->
+    <node pkg="xsens_mti_ros2_driver" name="xsens_mti_node" exec="xsens_mti_node" output="screen" if="$(var launch_driver)">
+      <remap from="/imu/data" to="imu_raw"/>
+      <param name="config_file" value="$(find-pkg-share xsens_mti_ros2_driver)/param/xsens_mti_node.yaml"/>
+      
+      <!-- 這裡加入你要設定的參數 -->
+      <param name="time_option" value="2"/>
+      <param name="frame_id" value="imu_link"/>
+      <param name="pub_transform" value="false"/>
+      <param name="enable_deviceConfig" value="true"/>
+    </node>
 
-    <arg name="imu_raw_name" default="tamagawa/imu_raw"/>
+    <!-- 改為使用 remapped 之 imu_raw 為輸入 -->
+    <arg name="imu_raw_name" default="imu_raw"/>
     <arg name="imu_corrector_param_file" default="$(find-pkg-share individual_params)/config/$(var vehicle_id)/sample_sensor_kit/imu_corrector.param.yaml"/>
+
+    <!-- IMU 校正 -->
     <include file="$(find-pkg-share autoware_imu_corrector)/launch/imu_corrector.launch.xml">
       <arg name="input_topic" value="$(var imu_raw_name)"/>
       <arg name="output_topic" value="imu_data"/>
       <arg name="param_file" value="$(var imu_corrector_param_file)"/>
     </include>
 
+    <!-- 偏移估測 -->
     <include file="$(find-pkg-share autoware_imu_corrector)/launch/gyro_bias_estimator.launch.xml">
       <arg name="input_imu_raw" value="$(var imu_raw_name)"/>
       <arg name="input_odom" value="/localization/kinematic_state"/>
@@ -28,3 +36,4 @@
     </include>
   </group>
 </launch>
+

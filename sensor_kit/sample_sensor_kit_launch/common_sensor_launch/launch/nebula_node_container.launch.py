@@ -136,6 +136,8 @@ def launch_setup(context, *args, **kwargs):
                         "packet_mtu_size",
                         "setup_sensor",
                         "udp_only",
+                        "diag_span",
+ 			"advanced_diagnostics",
                     ),
                 },
             ],
@@ -256,6 +258,8 @@ def generate_launch_description():
 
     common_sensor_share_dir = get_package_share_directory("common_sensor_launch")
 
+    add_launch_arg("advanced_diagnostics", "false", "advanced_diagnostics")
+    add_launch_arg("diag_span", "1000", "diag_span")
     add_launch_arg("sensor_model", description="sensor model name")
     add_launch_arg("config_file", "", description="sensor configuration file")
     add_launch_arg("launch_driver", "True", "do launch driver")
