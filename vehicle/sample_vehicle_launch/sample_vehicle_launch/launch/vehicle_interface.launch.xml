@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <launch>
-  <arg name="vehicle_id" default="$(env VEHICLE_ID default)"/>
+  <!-- Autoware 會啟動這個檔案 -->
+  <include file="$(find-pkg-share avg428_vehicle_interface)/launch/vehicle_interface.launch.xml"/>
 </launch>
