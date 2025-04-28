@@ -11,56 +11,175 @@ def generate_launch_description():
 
     camera_nodes = []
     image_proc_nodes = []
-    override_nodes = []
+    # override_nodes = []  # 已經不用 override_nodes，這行可以拿掉
 
-    sides = ['f', 'b', 'l', 'r']
-    output_names = ['camera0', 'camera1', 'camera2', 'camera3']
-
-    for i, side in enumerate(sides):
-        input_ns = f'/sensing/camera_{side}'
-        output_ns = f'{output_names[i]}'
-        config_file = f'{config_base}/params_{side}.yaml'
-
-        # usb_cam node
-        camera_nodes.append(
-            ComposableNode(
-                package='usb_cam',
-                plugin='usb_cam::UsbCamNode',
-                name=f'usb_cam_{side}',
-                namespace=f'camera_{side}',
-                parameters=[
-                    config_file,
-                    {'image_transport': 'raw'}
-                ]
-            )
+    # --------- camera_f ---------
+    """
+    camera_nodes.append(
+        ComposableNode(
+            package='usb_cam',
+            plugin='usb_cam::UsbCamNode',
+            name='usb_cam_f',
+            namespace='camera_f',
+            parameters=[
+                f'{config_base}/params_f.yaml',
+                {'image_transport': 'raw'}
+            ]
         )
+    )
 
-        # image_proc node
-        image_proc_nodes.append(
-            ComposableNode(
-                package='image_proc',
-                plugin='image_proc::RectifyNode',
-                name=f'rectify_{side}',
-                remappings=[
-                    ('image', f'{input_ns}/image_raw'),
-                    ('camera_info', f'{input_ns}/camera_info'),
-                    ('image_rect', f'{output_ns}/image_rect')
-                ]
-            )
+    image_proc_nodes.append(
+        ComposableNode(
+            package='image_proc',
+            plugin='image_proc::RectifyNode',
+            name='rectify_f',
+            namespace='camera_f',
+            remappings=[
+                ('image', 'image_raw'),
+                ('camera_info', 'camera_info'),
+                ('image_rect', 'image_rect')
+            ]
         )
+    )
 
-        # override node
-        override_nodes.append(
-            Node(
-                package='camera_info_tools',
-                executable='override_node',
-                name=f'camera_info_override_{side}',
-                remappings=[
-                    ('camera_info_raw', f'{input_ns}/camera_info'),
-                    ('camera_info', f'camera/{output_ns}/camera_info')
-                ]
-            )
+    override_nodes.append(
+        Node(
+            package='camera_info_tools',
+            executable='override_node',
+            name='camera_info_override_f',
+            remappings=[
+                ('camera_info_raw', 'camera_info'),
+                ('camera_info', 'camera_info')
+            ]
         )
+    )
+    """
+
+    # --------- camera_b ---------
+    camera_nodes.append(
+        ComposableNode(
+            package='usb_cam',
+            plugin='usb_cam::UsbCamNode',
+            name='usb_cam_b',
+            namespace='camera_b',
+            parameters=[
+                f'{config_base}/params_b.yaml',
+                {'image_transport': 'raw'}
+            ]
+        )
+    )
+
+    image_proc_nodes.append(
+        ComposableNode(
+            package='image_proc',
+            plugin='image_proc::RectifyNode',
+            name='rectify_b',
+            namespace='camera_b',
+            remappings=[
+                ('image', 'image_raw'),
+                ('camera_info', 'camera_info'),
+                ('image_rect', 'image_rect')
+            ]
+        )
+    )
+
+    """
+    override_nodes.append(
+        Node(
+            package='camera_info_tools',
+            executable='override_node',
+            name='camera_info_override_b',
+            remappings=[
+                ('camera_info_raw', 'camera_info'),
+                ('camera_info', 'camera_info')
+            ]
+        )
+    )
+    """
+
+    # --------- camera_l ---------
+    """
+    camera_nodes.append(
+        ComposableNode(
+            package='usb_cam',
+            plugin='usb_cam::UsbCamNode',
+            name='usb_cam_l',
+            namespace='camera_l',
+            parameters=[
+                f'{config_base}/params_l.yaml',
+                {'image_transport': 'raw'}
+            ]
+        )
+    )
+
+    image_proc_nodes.append(
+        ComposableNode(
+            package='image_proc',
+            plugin='image_proc::RectifyNode',
+            name='rectify_l',
+            namespace='camera_l',
+            remappings=[
+                ('image', 'image_raw'),
+                ('camera_info', 'camera_info'),
+                ('image_rect', 'image_rect')
+            ]
+        )
+    )
+
+    override_nodes.append(
+        Node(
+            package='camera_info_tools',
+            executable='override_node',
+            name='camera_info_override_l',
+            remappings=[
+                ('camera_info_raw', 'camera_info'),
+                ('camera_info', 'camera_info')
+            ]
+        )
+    )
+    """
+
+    # --------- camera_r ---------
+    """
+    camera_nodes.append(
+        ComposableNode(
+            package='usb_cam',
+            plugin='usb_cam::UsbCamNode',
+            name='usb_cam_r',
+            namespace='camera_r',
+            parameters=[
+                f'{config_base}/params_r.yaml',
+                {'image_transport': 'raw'}
+            ]
+        )
+    )
+
+    image_proc_nodes.append(
+        ComposableNode(
+            package='image_proc',
+            plugin='image_proc::RectifyNode',
+            name='rectify_r',
+            namespace='camera_r',
+            remappings=[
+                ('image', 'image_raw'),
+                ('camera_info', 'camera_info'),
+                ('image_rect', 'image_rect')
+            ]
+        )
+    )
+
+    override_nodes.append(
+        Node(
+            package='camera_info_tools',
+            executable='override_node',
+            name='camera_info_override_r',
+            remappings=[
+                ('camera_info_raw', 'camera_info'),
+                ('camera_info', 'camera_info')
+            ]
+        )
+    )
+    """
 
     camera_container = ComposableNodeContainer(
         name='camera_container',
@@ -71,6 +190,8 @@ def generate_launch_description():
         composable_node_descriptions=camera_nodes + image_proc_nodes
     )
 
+    # 註解掉 yolox launch
+    """
     yolox_launch = IncludeLaunchDescription(
         AnyLaunchDescriptionSource(PathJoinSubstitution([
             FindPackageShare('autoware_tensorrt_yolox'),
@@ -78,10 +199,10 @@ def generate_launch_description():
             'multiple_yolox.launch.xml'
         ])),
         launch_arguments={
-            'image_raw0': '/sensing/camera0/image_rect',
-            'image_raw1': '/sensing/camera1/image_rect',
-            'image_raw2': '/sensing/camera2/image_rect',
-            'image_raw3': '/sensing/camera3/image_rect',
+            'image_raw0': 'camera_f/image_rect',
+            'image_raw1': 'camera_b/image_rect',
+            'image_raw2': 'camera_l/image_rect',
+            'image_raw3': 'camera_r/image_rect',
             'image_raw4': '',
             'image_raw5': '',
             'image_raw6': '',
@@ -89,9 +210,10 @@ def generate_launch_description():
             'image_number': '4'
         }.items()
     )
+    """
 
     return LaunchDescription([
         camera_container,
-        yolox_launch,
-        *override_nodes
+        # yolox_launch,  # <- 這裡也註解掉
+        # *override_nodes  # override_nodes 不用加
     ])

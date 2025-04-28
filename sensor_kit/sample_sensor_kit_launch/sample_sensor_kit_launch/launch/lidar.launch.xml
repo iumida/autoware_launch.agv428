@@ -12,7 +12,7 @@
     <group>
       <push-ros-namespace namespace="top"/>
       <include file="$(find-pkg-share common_sensor_launch)/launch/velodyne_VLP16.launch.xml">
-        <arg name="max_range" value="130.0"/>
+        <arg name="max_range" value="100.0"/>
         <arg name="sensor_frame" value="velodyne_top"/>
         <arg name="sensor_ip" value="192.168.1.201"/>
         <arg name="host_ip" value="$(var host_ip)"/>
