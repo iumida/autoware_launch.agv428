@@ -11,7 +11,9 @@ def generate_launch_description():
 
     camera_nodes = []
     image_proc_nodes = []
-    # override_nodes = []  # 已經不用 override_nodes，這行可以拿掉
+
+    # 改成固定使用 isaac_ros_image_proc
+    rectify_package = 'isaac_ros_image_proc'
 
     # --------- camera_f ---------
     """
@@ -30,26 +32,14 @@ def generate_launch_description():
 
     image_proc_nodes.append(
         ComposableNode(
-            package='image_proc',
-            plugin='image_proc::RectifyNode',
+            package='isaac_ros_image_proc',
+            plugin='nvidia::isaac_ros::image_proc::RectifyNode',
             name='rectify_f',
             namespace='camera_f',
             remappings=[
                 ('image', 'image_raw'),
                 ('camera_info', 'camera_info'),
                 ('image_rect', 'image_rect')
-            ]
-        )
-    )
-
-    override_nodes.append(
-        Node(
-            package='camera_info_tools',
-            executable='override_node',
-            name='camera_info_override_f',
-            remappings=[
-                ('camera_info_raw', 'camera_info'),
-                ('camera_info', 'camera_info')
             ]
         )
     )
@@ -71,8 +61,8 @@ def generate_launch_description():
 
     image_proc_nodes.append(
         ComposableNode(
-            package='image_proc',
-            plugin='image_proc::RectifyNode',
+            package='isaac_ros_image_proc',
+            plugin='nvidia::isaac_ros::image_proc::RectifyNode',
             name='rectify_b',
             namespace='camera_b',
             remappings=[
@@ -82,20 +72,6 @@ def generate_launch_description():
             ]
         )
     )
-
-    """
-    override_nodes.append(
-        Node(
-            package='camera_info_tools',
-            executable='override_node',
-            name='camera_info_override_b',
-            remappings=[
-                ('camera_info_raw', 'camera_info'),
-                ('camera_info', 'camera_info')
-            ]
-        )
-    )
-    """
 
     # --------- camera_l ---------
     """
@@ -114,26 +90,14 @@ def generate_launch_description():
 
     image_proc_nodes.append(
         ComposableNode(
-            package='image_proc',
-            plugin='image_proc::RectifyNode',
+            package='isaac_ros_image_proc',
+            plugin='nvidia::isaac_ros::image_proc::RectifyNode',
             name='rectify_l',
             namespace='camera_l',
             remappings=[
                 ('image', 'image_raw'),
                 ('camera_info', 'camera_info'),
                 ('image_rect', 'image_rect')
-            ]
-        )
-    )
-
-    override_nodes.append(
-        Node(
-            package='camera_info_tools',
-            executable='override_node',
-            name='camera_info_override_l',
-            remappings=[
-                ('camera_info_raw', 'camera_info'),
-                ('camera_info', 'camera_info')
             ]
         )
     )
@@ -156,26 +120,14 @@ def generate_launch_description():
 
     image_proc_nodes.append(
         ComposableNode(
-            package='image_proc',
-            plugin='image_proc::RectifyNode',
+            package='isaac_ros_image_proc',
+            plugin='nvidia::isaac_ros::image_proc::RectifyNode',
             name='rectify_r',
             namespace='camera_r',
             remappings=[
                 ('image', 'image_raw'),
                 ('camera_info', 'camera_info'),
                 ('image_rect', 'image_rect')
-            ]
-        )
-    )
-
-    override_nodes.append(
-        Node(
-            package='camera_info_tools',
-            executable='override_node',
-            name='camera_info_override_r',
-            remappings=[
-                ('camera_info_raw', 'camera_info'),
-                ('camera_info', 'camera_info')
             ]
         )
     )
@@ -214,6 +166,5 @@ def generate_launch_description():
 
     return LaunchDescription([
         camera_container,
-        # yolox_launch,  # <- 這裡也註解掉
-        # *override_nodes  # override_nodes 不用加
+        # yolox_launch,
     ])
